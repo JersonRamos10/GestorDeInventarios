@@ -37,6 +37,12 @@ Este manual proporciona instrucciones detalladas para usar la aplicación Invent
 
  ## Funciones Avanzadas 
 
+ ##Usuarios predeterminados
+ -**User Admin**: 
+ -admin@admin.com
+ -**Contraseña**
+ -82D7QokQ*
+
  ### Para Administradores
 1. **Gestión de Usuarios**:
    - Puedes:
