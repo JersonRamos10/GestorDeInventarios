@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@{
+    var isAdmin = User.IsInRole("Admin"); // Verifica si el usuario es admin
+    var isAuthenticated = User.Identity.IsAuthenticated; // Verifica si el usuario esta autenticado
+}
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(to bottom, #f0f4f8, #d9e2ec);
+        color: #2c3e50;
+    }
+
+    .card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+    .texto {
+        font-size: 2rem;
+    }
+</style>
+
+<div class="container text-center mt-5">
+    @if (!isAuthenticated)
+    {
+        <!-- Contenido para visitantes no autenticados -->
+        <h1 class="display-3 text-primary mb-4">¡Bienvenido a Inventario de Productos!</h1>
+        <p class="lead mb-5">Gestiona tu inventario de forma sencilla. Inicia sesión o regístrate para disfrutar de todas las funcionalidades.</p>
+        
+        <!--Rutas para logearse en la pagina-->
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 mb-4">
+               
+                <a href="Identity/Account/Login" class="btn btn-primary btn-lg w-100">Iniciar Sesión</a>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+               
+                <a href="Identity/Account/Register" class="btn btn-secondary btn-lg w-100">Registrarse</a>
+            </div>
+        </div>
+        <!-- Sección Informativa para todos usuarios -->
+        <div class="container my-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <img src="/img/ilustracion1.jpg" alt="Gestión eficiente" class="img-fluid rounded shadow-lg">
+                </div>
+                <div class="col-lg-6 text-lg-start text-center">
+                    <h2 class="mb-4 text-primary">Control Total de tu Inventario</h2>
+                    <p class="text-muted texto">
+                        Nuestro sistema está diseñado para simplificar el control de tu inventario, permitiéndote ahorrar tiempo y mejorar la eficiencia de tus operaciones. Gestiona productos, consulta reportes y mantén todo bajo control desde un solo lugar.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container my-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <img src="/img/ilustracion2.jpg" alt="Estadísticas claras" class="img-fluid rounded shadow-lg">
+                </div>
+                <div class="col-lg-6 order-lg-1 text-lg-end text-center">
+                    <h2 class="mb-4 text-primary text-center">Reportes y Estadísticas</h2>
+                    <p class="text-muted texto">
+                        Obtén datos precisos sobre el estado de tu inventario, productos más vendidos y estadísticas clave para tomar decisiones informadas. Visualiza el valor total del inventario y la cantidad de productos disponibles.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- panel de reseñas -->
+        <div class="container my-5 text-center">
+            <h2 class="mb-4 text-primary">Empresas que confían en nosotros</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-2 col-md-3 col-4">
+                    <img src="/img/shopping00.jpg" alt="Logo Empresa 1" class="img-fluid mb-5">
+                </div>
+                <div class="col-lg-2 col-md-3 col-4">
+                    <img src="/img/shopping1.jpg" alt="Logo Empresa 2" class="img-fluid mb-5">
+                </div>
+                <div class="col-lg-2 col-md-3 col-4">
+                    <img src="img/shopping2.jpg" alt="Logo Empresa 3" class="img-fluid mb-5">
+                </div>
+                <div class="col-lg-2 col-md-3 col-4">
+                    <img src="/img/shopping3.jpg" alt="Logo Empresa 4" class="img-fluid mb-5">
+                </div>
+                <div class="col-lg-2 col-md-3 col-4">
+                    <img src="/img/shopping4.png" alt="Logo Empresa 5" class="img-fluid mb-5">
+                </div>
+            </div>
+        </div>
+       
+    }
+    else
+    {
+        <!-- Contenido para usuarios autenticados -->
+        <h1 class="display-3 text-primary mb-4">¡Hola, @User.Identity.Name!</h1>
+        <p class="lead mb-5">Gracias por iniciar sesión. Explora las funcionalidades disponibles para ti.</p>
+
+        <!-- Cards de funcionalidades -->
+        <div class="row justify-content-center">
+            <!-- Card visible para todos los usuarios autenticados -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-lg" style="background-color: #2c3e50; color: white;">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestiona Productos</h5>
+                        <p class="card-text">Agrega, edita o elimina productos de tu inventario. Mantén todo organizado y al día.</p>
+                        <a href="@Url.Action("Index", "Products")" class="btn btn-primary w-100">Ver Inventario</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card visible para todos los usuarios autenticados -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-lg" style="background-color: #2c3e50; color: white;">
+                    <div class="card-body">
+                        <h5 class="card-title">Estadísticas de Inventario</h5>
+                        <p class="card-text">Consulta estadísticas clave sobre el inventario, como el valor total y la cantidad de productos.</p>
+                        <a href="@Url.Action("Estadisticas", "Reportes")" class="btn btn-info w-100">Ver Estadísticas</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards adicionales solo para admin -->
+            @if (isAdmin)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow-lg" style="background-color: #2c3e50; color: white;">
+                        <div class="card-body">
+                            <h5 class="card-title">Gestionar Productos</h5>
+                            <p class="card-text">Administra el inventario agregando, editando o eliminando productos.</p>
+                            <a href="@Url.Action("Index", "Products")" class="btn btn-warning w-100">Crear Nuevo Producto</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow-lg" style="background-color: #2c3e50; color: white;">
+                        <div class="card-body">
+                            <h5 class="card-title">Reportes y Estadísticas</h5>
+                            <p class="card-text">Consulta reportes sobre el rendimiento de tu inventario. Obtén información clave para mejorar tus ventas.</p>
+                            <a href="@Url.Action("Index", "Reportes")" class="btn btn-success w-100">Ver Reportes</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

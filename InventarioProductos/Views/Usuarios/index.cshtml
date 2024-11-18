@@ -1,0 +1,51 @@
+﻿@model IEnumerable<UsuariosRolesModel>
+
+@{
+    ViewData["Title"] = "Administración de Usuarios";
+}
+
+<style>
+    body {
+        background-color:azure;
+    }
+</style>
+<h1 class="text-center text-primary my-4">Administración de Usuarios</h1>
+
+@if (User.IsInRole("Admin"))
+{
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>Nombre de Usuario</th>
+                <th>Correo Electrónico</th>
+                <th>Roles</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.User.UserName</td>
+                    <td>@usuario.User.Email</td>
+                    <td>
+                        @foreach (var role in usuario.Roles)
+                        {
+                            <span class="badge bg-primary">@role</span>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Editar", "Usuarios", new { id = usuario.User.Id })" class="btn btn-sm">Editar</a>
+                        <a href="@Url.Action("Eliminar", "Usuarios", new { id = usuario.User.Id })" class="btn btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        No tienes permisos para acceder a esta página.
+    </div>
+}

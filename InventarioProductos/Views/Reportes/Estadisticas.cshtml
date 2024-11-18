@@ -1,0 +1,141 @@
+﻿<!--vista para estadisticas-->
+@model EstadisticasViewModel
+
+<style>
+    body {
+        background-color:azure;
+    }
+</style>
+<h1 class="text-primary">Estadísticas de Inventario</h1>
+
+<div>
+    <p>Total de Inventario: <strong>@Model.TotalInventario.ToString("C")</strong></p>
+    <p>Total de Productos: <strong>@Model.TotalProductos</strong></p>
+</div>
+
+<h2 class="text-primary">Gráficos de Inventario</h2>
+
+<!-- Grafico de barras -->
+<div class="grafico-container">
+    <h3 class="text-black-50" >Cantidad de Productos por Nombre</h3>
+    <canvas id="graficoCantidad"></canvas>
+</div>
+
+<!-- Grafico de pastel -->
+<div class="grafico-container">
+    <h3 class="text-black-50">Distribución por Valor Total (Precio × Cantidad)</h3>
+    <canvas id="graficoValor"></canvas>
+</div>
+
+<!-- Estilos -->
+<style>
+    .grafico-container {
+        max-width: 600px;
+        margin: 20px auto;
+        position: relative;
+    }
+
+    canvas {
+        display: block;
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .mensaje-inicio-sesion {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1.1em;
+        color: #555;
+    }
+
+        .mensaje-inicio-sesion a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+            .mensaje-inicio-sesion a:hover {
+                text-decoration: underline;
+            }
+</style>
+
+<!-- Scripts libreria chart.js paralos graficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Gráfico de barras: Cantidad de Productos
+    var ctxCantidad = document.getElementById('graficoCantidad').getContext('2d');
+    var graficoCantidad = new Chart(ctxCantidad, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.Productos.Select(p => p.Nombre).ToList())),
+            datasets: [{
+                label: 'Cantidad de productos',
+                data: @Html.Raw(Json.Serialize(Model.Productos.Select(p => p.Cantidad).ToList())),
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+
+    // Gráfico de pastel: Valor Total
+    var ctxValor = document.getElementById('graficoValor').getContext('2d');
+    var graficoValor = new Chart(ctxValor, {
+        type: 'pie',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.Productos.Select(p => p.Nombre).ToList())),
+            datasets: [{
+                label: 'Distribución por valor total',
+                data: @Html.Raw(Json.Serialize(Model.Productos.Select(p => p.Precio * p.Cantidad).ToList())),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            var value = tooltipItem.raw.toLocaleString('es-ES', { style: 'currency', currency: 'USD' });
+                            return `${tooltipItem.label}: ${value}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>

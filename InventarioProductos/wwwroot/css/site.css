@@ -1,0 +1,81 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+/*Pagina Login y dsieños generales*/
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+
+.card {
+    border: 1px solid #34495e;
+}
+
+.btn {
+    background-color: #1a242f;
+    border-color: white;
+    color: white;
+}
+
+    .btn:hover {
+        background-color: #1a242f;
+        border-color: peru;
+        color: peru;
+    }
+
+.text-center a {
+    color: #2980b9;
+    text-decoration: none;
+}
+
+    .text-center a:hover {
+        text-decoration: underline;
+    }
+
+.textspn {
+    color: azure;
+}
+
+h1, h2, h3 {
+    color: #ecf0f1;
+}
+
+.form-label {
+    color: snow;
+}
+
+.form-check-label {
+    color: #bdc3c7;
+}
+
+.form-control {
+    background-color: white;
+    border-color: #2c3e50;
+    color: lightslategrey;
+}
+
+    .form-control:focus {
+        background-color: snow;
+        border-color: #2980b9;
+        box-shadow: 0 0 5px #2980b9;
+        color:darkseagreen;
+    }
+
+.form-floating .form-label {
+    color: #bdc3c7;
+}
+
+
+

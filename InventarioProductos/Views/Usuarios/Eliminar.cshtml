@@ -1,0 +1,15 @@
+﻿@model EliminarUsuarioModel
+
+<h1 class="text-primary">Eliminar Usuario</h1>
+<div class="alert alert-warning">
+
+    <p>¿Está seguro de que desea eliminar a @Model.UserName (@Model.Email)?<strong>Esta acción no se puede deshacer.</strong></p>
+</div>
+
+
+<form asp-action="EliminarConfirmado" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Confirmar</button>
+    <a href="@Url.Action("Index", "Usuarios")" class="btn btn-secondary">Cancelar</a>
+</form>
+

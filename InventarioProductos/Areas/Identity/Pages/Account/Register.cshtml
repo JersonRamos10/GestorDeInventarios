@@ -1,0 +1,136 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+<!--diseños de la vista de registros-->
+<style>
+    body {
+        background: linear-gradient(45deg, #1a242f, #34495e);
+        color: #ecf0f1;
+    }
+
+
+    .card {
+        background-color: #2c3e50;
+        border-radius: 15px;
+        padding: 30px;
+        color: #ecf0f1;
+    }
+
+    .form-control {
+        background-color: #34495e;
+        color: #ecf0f1;
+        border: 1px solid #2c3e50;
+    }
+
+    .form-label {
+        color: #ecf0f1;
+    }
+
+    .form-floating input:focus {
+        border-color: #2980b9;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.5);
+    }
+
+
+
+    .btn:focus {
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.5);
+    }
+
+
+    .external-login-section {
+        background-color: #2c3e50;
+        padding: 20px;
+        border-radius: 15px;
+        margin-top: 20px;
+    }
+
+        .external-login-section h3 {
+            color: #ecf0f1;
+        }
+
+        .external-login-section button {
+            background-color: #34495e;
+            border-color: #2c3e50;
+            color: #ecf0f1;
+        }
+
+            .external-login-section button:hover {
+                background-color: #2980b9;
+                border-color: #2980b9;
+            }
+
+</style>
+<h1>@ViewData["Title"]</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h2>Create a new account</h2>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="textspn"></div>
+                <div class="form-floating">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                    <label asp-for="Input.Email"></label>
+                    <span asp-validation-for="Input.Email" class="textspn"></span>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                    <label asp-for="Input.Password"></label>
+                    <span asp-validation-for="Input.Password" class="textspn"></span>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                    <label asp-for="Input.ConfirmPassword"></label>
+                    <span asp-validation-for="Input.ConfirmPassword" class="textspn"></span>
+                </div>
+
+                <!-- Agregar checkbox para Admin -->
+                <div class="form-check">
+                    <input asp-for="Input.IsAdmin" class="form-check-input" type="checkbox" />
+                    <label asp-for="Input.IsAdmin" class="form-check-label">Assign Admin Role</label>
+                </div>
+                <button id="registerSubmit" type="submit" class="btn w-100 btn-lg">Register</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <section class="external-login-section">
+            <h3>Use another service to register.</h3>
+            <hr />
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                                article
+                                about setting up this ASP.NET application to support logging in via external services
+                            </a>.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn" name="provider" value="@provider.Name" title="Register using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

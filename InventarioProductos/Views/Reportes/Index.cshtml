@@ -1,0 +1,176 @@
+﻿@model InventarioProductos.Models.ReportesYEstadisticasViewModel
+
+@{
+    ViewData["Title"] = "Informes de Inventario";
+}
+
+<style>
+        body
+        {
+            background-color: azure;
+        }
+        
+    
+</style>
+
+<h1 class="text-center text-primary my-4">📊 Informes de Inventario</h1>
+
+<!-- Tarjetas de Estadisticas Generales -->
+<div class="row text-center mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-lg border-primary" style="cursor: pointer;">
+            <div class="card-body">
+                <i class="fas fa-dollar-sign fa-3x text-primary"></i>
+                <h5 class="card-title mt-3">Valor Total</h5>
+                <p class="card-text text-primary">@Model.Estadisticas.TotalInventario.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-lg border-success" style="cursor: pointer;">
+            <div class="card-body">
+                <i class="fas fa-cogs fa-3x text-success"></i>
+                <h5 class="card-title mt-3">Total de Productos</h5>
+                <p class="card-text text-success">@Model.Estadisticas.TotalProductos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-lg border-warning" style="cursor: pointer;">
+            <div class="card-body">
+                <i class="fas fa-exclamation-triangle fa-3x text-warning"></i>
+                <h5 class="card-title mt-3">Productos con Bajo Stock</h5>
+                <p class="card-text text-warning">@Model.Estadisticas.ProductosMenosVendidos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-lg border-info" style="cursor: pointer;">
+            <div class="card-body">
+                <i class="fas fa-boxes fa-3x text-info"></i>
+                <h5 class="card-title mt-3">Categorías Principales</h5>
+                <p class="card-text text-info">Electrónica, Hogar...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Boton para cargar los graficos -->
+<div class="text-center mb-4">
+    <button id="cargarGraficosBtn" class="btn btn-primary btn-lg">Cargar Gráficos</button>
+</div>
+
+<!-- Reportes: Productos Mas Vendidos -->
+<div class="card shadow-lg mb-4" id="productosMasVendidos" style="display:none;">
+    <div class="card-header bg-success text-white">
+        <h2 class="card-title mb-0">Productos Más Vendidos</h2>
+    </div>
+    <div class="card-body">
+        @if (Model.Reportes.ProductosMasVendidos != null && Model.Reportes.ProductosMasVendidos.Any())
+        {
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cantidad Vendida</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Reportes.ProductosMasVendidos)
+                    {
+                        <tr>
+                            <td>@product.Nombre</td>
+                            <td>@product.Cantidad</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <canvas id="graficoProductosMasVendidos" width="400" height="200"></canvas>
+        }
+        else
+        {
+            <p class="text-warning">No se encontraron productos más vendidos.</p>
+        }
+    </div>
+</div>
+
+<!-- Reportes: Productos con Menor Stock -->
+<div class="card shadow-lg mb-4" id="productosConMenorStock" style="display:none;">
+    <div class="card-header bg-danger text-white">
+        <h2 class="card-title mb-0">Productos con Menor Stock</h2>
+    </div>
+    <div class="card-body">
+        @if (Model.Reportes.ProductosConMenorStocks != null && Model.Reportes.ProductosConMenorStocks.Any())
+        {
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cantidad en Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Reportes.ProductosConMenorStocks)
+                    {
+                        <tr>
+                            <td>@product.Nombre</td>
+                            <td>@product.Cantidad</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <canvas id="graficoMenorStock" width="400" height="200"></canvas>
+        }
+        else
+        {
+            <p class="text-warning">No se encontraron productos con menor stock.</p>
+        }
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Funcion para cargar los graficos de manera progresiva
+    document.getElementById('cargarGraficosBtn').addEventListener('click', function () {
+        // Mostrar las secciones de los reportes
+        document.getElementById('productosMasVendidos').style.display = 'block';
+        document.getElementById('productosConMenorStock').style.display = 'block';
+
+        // Crear los graficos despues de mostrar las secciones
+        var ctxMasVendidos = document.getElementById('graficoProductosMasVendidos').getContext('2d');
+        new Chart(ctxMasVendidos, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.Reportes.ProductosMasVendidos.Select(p => p.Nombre))),
+                datasets: [{
+                    label: 'Cantidad Vendida',
+                    data: @Html.Raw(Json.Serialize(Model.Reportes.ProductosMasVendidos.Select(p => p.Cantidad))),
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+
+        var ctxMenorStock = document.getElementById('graficoMenorStock').getContext('2d');
+        new Chart(ctxMenorStock, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.Reportes.ProductosConMenorStocks.Select(p => p.Nombre))),
+                datasets: [{
+                    label: 'Cantidad en Stock',
+                    data: @Html.Raw(Json.Serialize(Model.Reportes.ProductosConMenorStocks.Select(p => p.Cantidad))),
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+
+        // Desactivar el boton después de cargar los gráficos
+        this.disabled = true;
+        this.innerText = 'Gráficos Cargados';
+    });
+</script>

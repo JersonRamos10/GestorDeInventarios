@@ -1,0 +1,95 @@
+﻿@model IEnumerable<InventarioProductos.Models.Product>
+
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<style>
+    body {
+        background-color:azure;
+    }
+
+</style>
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4 text-primary">Admin Dashboard</h1>
+        <p class="lead text-50">Bienvenido, administrador. Aquí puedes gestionar el inventario, usuarios, y ver reportes clave.</p>
+    </div>
+
+    <!-- Panel de Acciones Administrativas -->
+    <div class="row text-center">
+
+        <!-- Panel de Gestion de Productos -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Gestión de Productos</h5>
+                    <p class="card-text">Agregar, editar o eliminar productos en el inventario.</p>
+                    <a href="/Products/Index" class="btn btn-light">Administrar Productos</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Gestión de Usuarios -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Gestión de Usuarios</h5>
+                    <p class="card-text">Visualizar y gestionar cuentas de usuario.</p>
+                    <a href="/Usuarios/index" class="btn btn-light">Administrar Usuarios</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Reportes y Estadisticas -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Reportes y Estadísticas</h5>
+                    <p class="card-text">Ver reportes de inventario, productos más vendidos y estadísticas de stock.</p>
+                    <a href="@Url.Action("Index", "Reportes")" class="btn btn-light">Ver Reportes</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Panel de Resumen de Inventario -->
+    <div class="row mt-5">
+        <div class="col">
+            <h3 class="text-center mb-4 text-primary">Resumen de Inventario</h3>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Valor Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var producto in Model)
+                            {
+                                <tr>
+                                    <td>@producto.Nombre</td>
+                                    <td>@producto.Descripcion</td>
+                                    <td>@producto.Precio.ToString("C")</td>
+                                    <td>@(producto.Cantidad * producto.Precio).ToString("C")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">No hay productos disponibles</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

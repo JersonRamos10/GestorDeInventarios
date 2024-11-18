@@ -1,0 +1,87 @@
+﻿@model IEnumerable<InventarioProductos.Models.Product>
+
+@{
+    ViewData["Title"] = "Lista de Productos";
+    var esAdmin = User.IsInRole("Admin");  // Verificamos si el usuario es Admin
+}
+
+<style>
+    body{
+        background-color: #1a242f;
+    
+    }
+
+    .btn {
+        border: 1px solid white;
+    }
+</style>
+<div class="container">
+    <h1 class="text-white">Lista de Productos</h1>
+
+    @if (!esAdmin)  // Si el usuario no es admin, mostramos un mensaje
+    {
+        <div class="alert alert-warning">
+            <strong>¡Advertencia!</strong> Debes ser un administrador para crear, editar o eliminar productos.
+        </div>
+    }
+    else
+    {
+        <a href="@Url.Action("Create", "Products")" class="btn btn-primary mb-3">Agregar Producto</a>
+    }
+
+    <!-- Formulario de búsqueda y filtro -->
+    <form method="get" class="mb-3">
+        <div class="row">
+            <div class="col-md-3">
+                <input type="text" name="terminoBusqueda" class="form-control" placeholder="Buscar por nombre o descripción" value="@ViewData["terminoBusqueda"]" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="precioMinimo" class="form-control" placeholder="Precio mínimo" value="@ViewData["precioMinimo"]" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="precioMaximo" class="form-control" placeholder="Precio máximo" value="@ViewData["precioMaximo"]" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="cantidadMinima" class="form-control" placeholder="Cantidad mínima" value="@ViewData["cantidadMinima"]" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="cantidadMaxima" class="form-control" placeholder="Cantidad máxima" value="@ViewData["cantidadMaxima"]" />
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+           
+
+        </div>
+    </form>
+
+    <!-- Mensaje si no hay productos -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <strong>Sin resultados</strong> No se encontraron productos que coincidan con los filtros.
+        </div>
+    }
+
+    <!-- Lista de productos -->
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Nombre</h5>
+                        <p class="card-text">@product.Descripcion</p>
+                        <a href="@Url.Action("Details", "Products", new { id = product.Id })" class="btn btn-info">Ver detalles</a>
+
+                        @if (esAdmin)  // Mostrar botones si el usuario es Admin
+                        {
+                            <a href="@Url.Action("Edit", "Products", new { id = product.Id })" class="btn btn-warning">Editar</a>
+                            <a href="@Url.Action("Delete", "Products", new { id = product.Id })" class="btn btn-danger">Eliminar</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
